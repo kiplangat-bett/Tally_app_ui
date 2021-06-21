@@ -1,5 +1,6 @@
 <template>
   <div class="main column items-center justify-center">
+    
     <div class="text-h6 text-white main__text">Welcome to Usawa</div>
     <div class="q-mt-lg column items-center action__btns">
       <q-btn

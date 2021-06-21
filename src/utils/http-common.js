@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://usawagenda.herokuapp.com/",
+  baseURL: "https://usawagenda.herokuapp.com",
 });
