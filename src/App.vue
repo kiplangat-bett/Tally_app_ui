@@ -15,29 +15,7 @@ export default {
       leftDrawerOpen: false,
     };
   },
-  // async created() {
-  //   const token = window.localStorage.getItem("token");
 
-  //   if (token == null) {
-  //     this.$router.push({ name: "login" });
-  //     return;
-  //   }
-
-  //   const res = await http.get("/verifyToken", {
-  //     headers: {
-  //       Authorization: "Bearer " + token,
-  //     },
-  //   });
-  //   console.log(res);
-
-  //   if (res.data.success == true) {
-  //     // do nothing
-  //     this.$router.push({ path: "/app" });
-  //     return;
-  //   }
-  //   // if false
-  //   this.$router.push({ name: "login" });
-  // },
 };
 </script>
 
