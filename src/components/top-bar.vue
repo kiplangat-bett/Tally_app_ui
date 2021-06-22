@@ -14,6 +14,7 @@ export default {
   methods: {
     logout() {
       window.localStorage.removeItem("token");
+      window.localStorage.setItem("logout", "loggge out !");
       this.$router.push({ name: "login" });
     },
   },

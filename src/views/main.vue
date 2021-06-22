@@ -82,15 +82,21 @@
           <div class="text-h6">create village</div>
         </q-card-section>
 
-        <q-form @submit="createVillage" class="q-gutter-md">
+        <q-form @submit="createVillage">
           <q-card-section class="q-pt-none">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Perferendis laudantium minus earum totam modi laborum illo, corporis
-            fuga saepe animi aliquam ea enim assumenda ut nulla natus aperiam
-            quis. Iste.
+            <div class="q-pa-lg">
+              <div class="text-h5 row items-center">
+                <q-icon name="help" />
+                <span class="q-ml-md">Help</span>
+              </div>
+
+              <div class="subtitle-text1 q-mt-md">
+                Enter the location and the name of the said village below
+              </div>
+            </div>
           </q-card-section>
 
-          <q-card-section>
+          <q-card-section class="q-gutter-lg">
             <q-input
               v-model="location"
               label="Location"
@@ -133,9 +139,8 @@
       </div>
 
       <div class="subtitle-text1 q-mt-md">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem
-        voluptatibus repudiandae vitae unde eum optio ipsa laboriosam? Qui,
-        deserunt alias!
+        You should that this is any personal information you provide will be
+        kept confidential
       </div>
     </div>
   </div>
@@ -168,16 +173,28 @@ export default {
   },
 
   async created() {
-    console.log(token);
+    this.showError();
     await this.fetchData();
     await this.fetchUser();
   },
   methods: {
+    showError() {
+      const error = window.localStorage.getItem("error");
+      const success = window.localStorage.getItem("v_deletion");
+
+      if (error == null || success == null) {
+        return;
+      }
+      this.showNotif(error, "negative");
+      this.showNotif(success, "positive");
+
+      window.localStorage.removeItem("error");
+      window.localStorage.removeItem("v_deletion");
+
+      return;
+    },
     addVillage() {
       this.inception = true;
-    },
-    onSubmit() {
-      console.log("called");
     },
     async createVillage() {
       this.loading = true;
@@ -222,13 +239,13 @@ export default {
 
       this.data = res.data.data;
     },
-    showNotif(message) {
+    showNotif(message, state = "positive") {
       this.$q.notify({
         message: message,
         icon: "thumb_up",
-        color: "positive",
+        color: state,
         multiline: true,
-        timeout: 1000,
+        timeout: 1500,
         position: "top",
       });
     },

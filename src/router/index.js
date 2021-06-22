@@ -9,26 +9,6 @@ const routes = [
     path: "/",
     name: "intro",
     component: () => import("../views/intro.vue"),
-    // beforeEnter: (to, from, next) => {
-    //   const new_user = window.localStorage.getItem("new_user");
-    //   console.log(new_user);
-
-    //   if (new_user === null) {
-    //     console.log("new_user");
-
-    //     window.localStorage.setItem("new_user", false);
-    //     return next();
-    //   }
-    //   if (!new_user){
-    //    return next({ name: "login"})
-
-    //   }
-    //   if(from.path === "/"){
-    //     console.log("here")
-
-    //    return next()
-    //   }
-    // },
   },
   {
     path: "/app",
@@ -98,7 +78,28 @@ router.beforeEach(async function (to, from, next) {
   if (to.name == "login" || to.name == "register") {
     console.log("inside login");
 
+    if (state) {
+      // if state is true request logout
+      window.localStorage.setItem("error", "please logout first");
+      return next({ path: "/app" });
+    }
+
     return next();
+  }
+
+  if (to.name == "intro") {
+    const not_new = window.localStorage.getItem("not_new");
+    if (not_new === null) {
+      // is new
+      window.localStorage.setItem("not_new", true);
+      return next();
+    }
+
+    if (not_new == true) {
+      // why view
+
+      return next({ name: "login" });
+    }
   }
 
   if (state) {

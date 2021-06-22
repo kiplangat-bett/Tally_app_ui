@@ -39,16 +39,20 @@
         Selected households for {{ data.name }}
       </div>
 
-      <nth-card class="names" v-for="(name, index) in nth_numbers" :participants="participants" :data="name" :key="index" />
-
+      <nth-card
+        class="names"
+        v-for="(name, index) in nth_numbers"
+        :participants="participants"
+        :data="name"
+        :key="index"
+      />
     </section>
   </div>
 </template>
 
-
 <script>
 import http from "@/utils/http-common";
-import nthCard from '@/components/nth_number'
+import nthCard from "@/components/nth_number";
 
 const token = window.localStorage.getItem("token");
 
@@ -56,10 +60,9 @@ export default {
   name: "finale",
   props: ["villageId"],
   components: {
-      "nth-card": nthCard
+    "nth-card": nthCard,
   },
   data() {
-  
     return {
       data: {},
       participants: [],

@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-lg" style="max-width: 400px">
     <div class="logo">
-      <div class="force-text row justify-center items-center">U</div>
+      <img src="../assets/logo.png" class="main__text" />
       <div class="subtitle-text q-my-sm">Village Data Collection Platform</div>
 
       <div class="text-h4 text-center q-mb-lg">Login Account</div>
@@ -9,7 +9,7 @@
 
     <q-form @submit="onSubmit" class="q-gutter-md">
       <q-input
-        filled
+        outlined
         type="email"
         v-model="email"
         class="fork"
@@ -22,7 +22,7 @@
       <q-input
         v-model="password"
         class="fork"
-        filled
+        outlined
         :type="isPwd ? 'password' : 'text'"
         label="Your password *"
         lazy-rules
@@ -42,6 +42,8 @@
           type="submit"
           :loading="loading"
           label="Login"
+          style="color: #fff"
+          icon="login"
           class="q-my-sm full-width"
         >
           <template v-slot:loading>
@@ -50,7 +52,7 @@
         </q-btn>
       </div>
 
-      <div class="q-my-lg text-center text-h5">
+      <div class="q-my-lg text-center text-h6">
         <span>New Here?</span>
         <router-link class="router__link" to="/register">
           Create An Account
@@ -67,11 +69,22 @@ export default {
   name: "login",
   data() {
     return {
-      email: "kiplangatsgt@gmail.com",
-      password: "bett254",
+      email: "",
+      password: "",
       loading: false,
       isPwd: true,
     };
+  },
+  created() {
+    window.localStorage.removeItem("not_new");
+    const error = window.localStorage.getItem("logout");
+
+    if (error == null) {
+      return;
+    }
+    this.showNotif(error, "bottom");
+  window.localStorage.removeItem("logout");
+
   },
   methods: {
     async onSubmit() {
@@ -98,7 +111,7 @@ export default {
         console.log(err);
       }
     },
-    showNotif(message) {
+    showNotif(message, position = "top") {
       this.$q.notify({
         message: message,
         icon: "report_problemt",
@@ -106,7 +119,7 @@ export default {
         multiline: true,
 
         timeout: 1000,
-        position: "top",
+        position: position,
       });
     },
   },
@@ -119,7 +132,7 @@ export default {
   padding: 0.4em 0;
   background: #1186cafb;
   color: #fff !important;
-  font-size: 18px;
+  font-size: 15px;
 }
 .vanish {
   color: #fff;

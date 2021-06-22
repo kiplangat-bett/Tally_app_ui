@@ -1,15 +1,15 @@
 <template>
   <div class="q-pa-lg" style="max-width: 400px">
     <div class="logo">
-      <div class="force-text row justify-center items-center">U</div>
-      <div class="subtitle-text q-my-sm">Village Data Collection Platform</div>
+      <img src="../assets/logo.png" class="main__text" />
+      <div class="subtitle-text q-my-sm">Data Collection Platform</div>
 
-      <div class="text-h4 text-center">Create Account</div>
+      <div class="text-h4 text-center q-mb-lg">Create Account</div>
     </div>
 
     <q-form @submit="onSubmit" class="q-gutter-md">
       <q-input
-        filled
+        outlined
         type="text"
         v-model="name"
         label="Your name *"
@@ -19,7 +19,7 @@
       />
 
       <q-input
-        filled
+        outlined
         type="email"
         v-model="email"
         label="Your email *"
@@ -30,7 +30,7 @@
 
       <q-input
         v-model="password"
-        filled
+        outlined
         :type="isPwd ? 'password' : 'text'"
         label="Your password *"
         lazy-rules
@@ -52,6 +52,7 @@
           label="Create Account"
           class="q-my-sm full-width"
           color="grey"
+          icon="login"
         >
           <template v-slot:loading>
             <q-spinner-facebook />
@@ -59,7 +60,7 @@
         </q-btn>
       </div>
 
-      <div class="q-my-lg text-center text-h5">
+      <div class="q-my-lg text-center text-h6">
         <span>Have Account?</span>
         <router-link class="router__link" to="/login"> Login </router-link>
       </div>
@@ -107,19 +108,6 @@ export default {
         console.log(err);
       }
     },
-    simulateSubmit() {
-      this.loading = true;
-
-      // Simulating a delay here.
-      // When we are done, we reset "submitting"
-      // Boolean to false to restore the
-      // initial state.
-      setTimeout(() => {
-        // delay simulated, we are done,
-        // now restoring submit to its initial state
-        this.loading = false;
-      }, 3000);
-    },
     showNotif(message) {
       this.$q.notify({
         message: message,
@@ -140,7 +128,7 @@ export default {
   padding: 0.4em 0;
   background: #1186cafb;
   color: #fff !important;
-  font-size: 18px;
+  font-size: 15px;
 }
 .logo {
   padding: 1rem 0;

@@ -11,7 +11,7 @@
       <q-btn flat round color="primary" icon="more_vert">
         <q-menu :offset="[-10, 20]" style="border-radius: 20px">
           <q-list style="min-width: 150px; background: #eee">
-            <q-item clickable v-close-popup @click="edit_village = true">
+            <q-item clickable v-close-popup @click="inception = true">
               <q-item-section>
                 <q-icon name="edit" size="20px" />
               </q-item-section>
@@ -19,7 +19,7 @@
               <q-item-section>Edit</q-item-section>
             </q-item>
             <q-separator />
-            <q-item clickable v-close-popup>
+            <q-item clickable v-close-popup @click="popVillage">
               <q-item-section>
                 <q-icon name="delete" size="20px" />
               </q-item-section>
@@ -55,6 +55,42 @@
         </q-item>
         <q-separator />
       </div>
+
+      <q-dialog v-model="inception">
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">Edit Village</div>
+          </q-card-section>
+          <q-form @submit="updateVillage" class="q-gutter-md">
+            <q-card-section>
+              <q-input
+                v-model="village.locality"
+                label="Location"
+                hint="e.g Nakuru West"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Please type something',
+                ]"
+              />
+              <q-input
+                v-model="village.name"
+                label="Name of Village"
+                hint="e.g Boma Nyeusi"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Please type something',
+                ]"
+              />
+            </q-card-section>
+
+            <q-card-actions align="right" class="text-primary">
+              <q-btn flat label="Close" no-caps v-close-popup />
+
+              <q-btn flat type="submit" no-caps label="Update" />
+            </q-card-actions>
+          </q-form>
+        </q-card>
+      </q-dialog>
 
       <div class="q-pa-lg column items-center text-center" v-if="completed">
         <div class="text-h6">Congratulations!<br /></div>
@@ -100,46 +136,6 @@
           <q-btn no-caps icon="add" @click="prompt" label="Add New" />
         </section>
 
-        <!-- edit dialogue -->
-
-        <q-dialog v-model="edit_village">
-          <q-card>
-            <q-card-section>
-              <div class="text-h6">Edit Village</div>
-            </q-card-section>
-            <q-form @submit="updateVillage" class="q-gutter-md">
-              <q-card-section>
-                <q-input
-                  v-model="village.locality"
-                  label="Location"
-                  hint="e.g Nakuru West"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Please type something',
-                  ]"
-                />
-                <q-input
-                  v-model="village.name"
-                  label="Name of Village"
-                  hint="e.g Boma Nyeusi"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Please type something',
-                  ]"
-                />
-              </q-card-section>
-
-              <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Close" no-caps v-close-popup />
-
-                <q-btn flat type="submit" no-caps label="Update" />
-              </q-card-actions>
-            </q-form>
-          </q-card>
-        </q-dialog>
-
-        <!-- end here -->
-
         <div class="q-mt-lg custom__add">
           <q-expansion-item
             class="shadow-1 overflow-hidden q-mt-md"
@@ -153,13 +149,14 @@
           >
             <q-card>
               <q-card-section>
-                <div class="row">
+                <div class="column">
                   <q-btn
                     color="primary"
                     outline
                     label="Remove User"
                     @click="deleteUser(index)"
                     no-caps
+                    style="display: inline-block"
                   />
 
                   <q-form @submit="updateUser(index)" class="q-gutter-md">
@@ -201,7 +198,7 @@ export default {
       data: "",
       participants: [],
       completed: false,
-      edit_village: false,
+      inception: false,
       new_name: "",
       village: {
         name: "",
@@ -221,7 +218,41 @@ export default {
   methods: {
     async updateVillage() {
       console.log("hinted correctly");
+
+      const res = await http.post(
+        "/updateVillage",
+        {
+          villageId: this.data._id,
+          data: this.village,
+        },
+        {
+          headers: {
+            Authorizaton: "Bearer " + token,
+          },
+        }
+      );
+
+      this.showNotif(res.data.msg);
     },
+    async popVillage() {
+      const res = await http.post(
+        "/deleteVillage",
+        {
+          villageId: this.data._id,
+        },
+        {
+          headers: {
+            Authorizaton: "Bearer " + token,
+          },
+        }
+      );
+
+      console.log(res);
+      window.localStorage.setItem("v_deletion", "successfully removed village");
+      this.$router.push({ path: "/app" });
+      // show notifications on main
+    },
+
     async updateCompleteStatus() {
       const res = await http.post(
         "/setCompleted",
@@ -240,7 +271,7 @@ export default {
         console.log(res.data.success);
       }
     },
-    async updateUser(target) {
+    async updateUsers(target) {
       this.participants[target] = this.new_name;
 
       const res = await http.post(
@@ -264,11 +295,31 @@ export default {
 
       console.log(res);
     },
+    async deleteUsers(target) {
+      const res = await http.post(
+        "/editParticipant",
+        {
+          participants: target,
+          villageId: this.data._id,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      this.showNotif("deleted succesfully!");
+
+      await this.fetchData();
+
+      console.log(res);
+    },
     async deleteUser(index) {
       console.log(index);
-      this.data.participants.splice(index, 1);
+      this.participants.splice(index, 1);
 
-      await this.updateUsers(this.data.participants);
+      await this.deleteUsers(this.participants);
       await this.fetchData();
     },
 
