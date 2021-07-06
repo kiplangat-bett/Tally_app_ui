@@ -83,8 +83,7 @@ export default {
       return;
     }
     this.showNotif(error, "bottom");
-  window.localStorage.removeItem("logout");
-
+    window.localStorage.removeItem("logout");
   },
   methods: {
     async onSubmit() {
